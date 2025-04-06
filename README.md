@@ -10,3 +10,9 @@ TODO:
 - [x] server stats
 - [ ] actual server stats
 - [ ] better search engine support for bangs in the search bar
+
+## to use: 
+```
+yarn build
+```
+then go to chrome://extensions, click `load unpacked` and pick the `/dist` folder
