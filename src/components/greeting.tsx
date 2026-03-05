@@ -1,50 +1,46 @@
 import { useState, useEffect } from "react"
-import { Clock } from "lucide-react"
+
+function getTimeState() {
+  const now = new Date()
+  const h = now.getHours()
+  return {
+    hours: String(h % 12 || 12).padStart(2, "0"),
+    minutes: String(now.getMinutes()).padStart(2, "0"),
+    seconds: String(now.getSeconds()).padStart(2, "0"),
+    dateStr: now.toLocaleDateString([], {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+    greeting:
+      h >= 5 && h < 12 ? "Good morning, sir"
+      : h >= 12 && h < 18 ? "Good afternoon, sir"
+      : h >= 18 && h < 22 ? "Good evening, sir"
+      : "Good night, sir",
+  }
+}
 
 export function Greeting() {
-  const [greeting, setGreeting] = useState("")
-  const [currentTime, setCurrentTime] = useState("")
+  const [{ hours, minutes, seconds, dateStr, greeting }, setTime] = useState(getTimeState)
 
   useEffect(() => {
-    const updateGreeting = () => {
-      const now = new Date()
-      const hour = now.getHours()
-
-      // Format the current time
-      const timeString = now.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-      setCurrentTime(timeString)
-
-      // Set the appropriate greeting based on time of day
-      if (hour >= 5 && hour < 12) {
-        setGreeting("Good morning, sir")
-      } else if (hour >= 12 && hour < 18) {
-        setGreeting("Good afternoon, sir")
-      } else if (hour >= 18 && hour < 22) {
-        setGreeting("Good evening, sir")
-      } else {
-        setGreeting("Good night, sir")
-      }
-    }
-
-    // Update immediately
-    updateGreeting()
-
-    // Update every minute
-    const intervalId = setInterval(updateGreeting, 60000)
-
-    return () => clearInterval(intervalId)
+    const id = setInterval(() => setTime(getTimeState()), 1000)
+    return () => clearInterval(id)
   }, [])
 
   return (
-    <div className="text-center py-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">{greeting}</h1>
-      <div className="flex items-center justify-center text-gray-500">
-        <Clock className="h-4 w-4 mr-2" />
-        <span>{currentTime}</span>
+    <div className="text-center pt-20 pb-4 select-none">
+      <div className="flex items-end justify-center gap-1 tabular-nums leading-none" style={{ fontFamily: "'DM Mono', monospace" }}>
+        <span className="text-[9rem] font-bold tracking-tight text-foreground">
+          {hours}:{minutes}
+        </span>
+        <span className="text-5xl font-bold text-muted-foreground mb-4 w-16 text-left">
+          {seconds}
+        </span>
       </div>
+      <div className="mt-2 text-lg text-muted-foreground font-light tracking-wide">{dateStr}</div>
+      <div className="mt-1 text-xs text-muted-foreground/60 uppercase tracking-[0.3em]">{greeting}</div>
     </div>
   )
 }

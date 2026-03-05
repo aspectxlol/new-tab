@@ -16,7 +16,10 @@ const manifest = defineManifest({
   chrome_url_overrides: {
     newtab: 'index.html',
   },
-  permissions: ['history', 'bookmarks'],
+  permissions: ['history', 'bookmarks', 'tabs', 'downloads', 'topSites'],
+  content_security_policy: {
+    extension_pages: "script-src 'self'; object-src 'self'; frame-src https://s.tradingview.com",
+  },
 })
 
 // https://vite.dev/config/

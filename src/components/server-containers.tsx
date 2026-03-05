@@ -290,13 +290,13 @@ export function ServerContainers() {
       <CardHeader className="flex flex-row items-center justify-between pb-2 flex-shrink-0">
         <CardTitle className="text-lg font-medium">
           <div className="flex items-center gap-2">
-            <Box className="h-5 w-5 text-gray-500" />
+            <Box className="h-5 w-5 text-muted-foreground" />
             <span>Containers</span>
           </div>
         </CardTitle>
         <div className="flex items-center gap-2">
-          <div className="text-xs bg-gray-100 px-2 py-1 rounded-md flex items-center gap-1">
-            <Server className="h-3 w-3 text-gray-500" />
+          <div className="text-xs bg-muted/60 px-2 py-1 rounded-md flex items-center gap-1">
+            <Server className="h-3 w-3 text-muted-foreground" />
             <span>
               Uptime: {uptime.days}d {uptime.hours}h {uptime.minutes}m
             </span>
@@ -313,11 +313,12 @@ export function ServerContainers() {
               return (
                 <div
                   key={container.id}
-                  className={`border rounded-md p-3 ${container.status === "unhealthy"
-                    ? "border-red-200 bg-red-50"
+                  className={`border rounded-md p-3 ${
+                    container.status === "unhealthy"
+                    ? "border-red-500/30 bg-red-500/10"
                     : container.status === "restarting"
-                      ? "border-blue-200 bg-blue-50"
-                      : "border-gray-200"
+                      ? "border-blue-500/30 bg-blue-500/10"
+                      : "border-border"
                     }`}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -329,19 +330,19 @@ export function ServerContainers() {
                     </div>
                     {getStatusBadge(container.status)}
                   </div>
-                  <div className="text-xs text-gray-500 mb-2 pl-10">{container.image}</div>
+                  <div className="text-xs text-muted-foreground mb-2 pl-10">{container.image}</div>
                   {container.ports.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2 pl-10">
                       {container.ports.map((port, index) => (
                         <div
                           key={index}
-                          className="text-xs bg-gray-100 px-1.5 py-0.5 rounded flex items-center"
+                          className="text-xs bg-muted/60 px-1.5 py-0.5 rounded flex items-center"
                           title={port.protocol ? `${port.protocol} port` : "port"}
                         >
-                          <span className="text-gray-700">
+                          <span className="text-foreground/80">
                             {port.external}:{port.internal}
                           </span>
-                          {port.protocol && <span className="ml-1 text-xs text-gray-500">({port.protocol})</span>}
+                          {port.protocol && <span className="ml-1 text-xs text-muted-foreground">({port.protocol})</span>}
                         </div>
                       ))}
                     </div>
@@ -353,11 +354,11 @@ export function ServerContainers() {
                       <span>{formatTime(container.lastHealthcheck.timestamp)}</span>
                     </div>
                     <div>
-                      {container.status === "running" && <span className="text-green-600 text-xs">Healthy</span>}
+                      {container.status === "running" && <span className="text-emerald-400 text-xs">Healthy</span>}
                       {container.status === "restarting" && (
-                        <span className="text-blue-600 text-xs">Restarting...</span>
+                        <span className="text-blue-400 text-xs">Restarting...</span>
                       )}
-                      {container.status === "unhealthy" && <span className="text-red-600 text-xs">Check failed</span>}
+                      {container.status === "unhealthy" && <span className="text-red-400 text-xs">Check failed</span>}
                     </div>
                   </div>
                 </div>

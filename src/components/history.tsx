@@ -3,11 +3,11 @@ import { Clock, MoreHorizontal } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function History() {
-  const [history, setHistory] = useState<{ id: number; title: string; url: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showAll, setShowAll] = useState(false); // State to toggle the visibility of all history items
+  const [history, setHistory] = useState<{ id: number; title: string; url: string }[] | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (chrome.history) {
@@ -19,23 +19,22 @@ export function History() {
             url: item.url || "about:blank",
           }))
         );
-        setLoading(false);
       });
     } else {
-      setLoading(false);
+      setHistory([]);
     }
   }, []);
 
   const removeItem = (id: number) => {
-    setHistory(history.filter((item) => item.id !== id));
+    setHistory((prev) => prev ? prev.filter((item) => item.id !== id) : prev);
   };
 
   return (
-    <Card className="">
+    <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-lg font-medium">
           <div className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-gray-500" />
+            <Clock className="h-5 w-5 text-emerald-400" />
             <span>History</span>
           </div>
         </CardTitle>
@@ -49,10 +48,20 @@ export function History() {
         </Button>
       </CardHeader>
       <CardContent className="pb-3">
-        {loading ? (
-          <p className="text-sm text-gray-500">Loading...</p>
+        {history === null ? (
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-3.5 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : history.length === 0 ? (
-          <p className="text-sm text-gray-500 w-full text-center">No history found</p>
+          <p className="text-sm text-muted-foreground w-full text-center">No history found</p>
         ) : (
           <div className="space-y-3">
             {(showAll ? history : history.slice(0, 4)).map((item) => (
@@ -63,7 +72,7 @@ export function History() {
                   rel="noopener noreferrer"
                   className="flex items-start gap-3 hover:underline"
                 >
-                  <div className="mt-0.5 h-8 w-8 flex-shrink-0 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                  <div className="mt-0.5 h-8 w-8 flex-shrink-0 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                     <img
                       src={`https://www.google.com/s2/favicons?domain=${new URL(item.url).hostname}&sz=32`}
                       alt=""
@@ -77,7 +86,7 @@ export function History() {
                   </div>
                   <div className="space-y-1">
                     <p className="line-clamp-1 text-sm font-medium">{item.title}</p>
-                    <p className="line-clamp-1 text-xs text-gray-500">{item.url}</p>
+                    <p className="line-clamp-1 text-xs text-muted-foreground">{item.url}</p>
                   </div>
                 </a>
                 <div className="ml-2 flex items-center gap-2">

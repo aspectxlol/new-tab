@@ -188,7 +188,7 @@ export function Search() {
           ref={inputRef}
           type="text"
           placeholder="Search Google or type a URL"
-          className="h-12 pl-4 pr-12 text-base rounded-full border-2 border-gray-200 focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-blue-500 focus-visible:border-transparent"
+          className="h-12 pl-4 pr-12 text-base rounded-full border-2 border-border bg-card text-foreground focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-primary focus-visible:border-transparent"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -198,22 +198,22 @@ export function Search() {
           type="submit"
           size="icon"
           variant="ghost"
-          className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full hover:bg-gray-100"
+          className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full hover:bg-accent"
         >
-          <SearchIcon className="h-5 w-5 text-gray-500" />
+          <SearchIcon className="h-5 w-5 text-muted-foreground" />
         </Button>
       </form>
 
       {isOpen && (
         <div
           ref={suggestionsRef}
-          className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-10"
+          className="absolute top-full left-0 right-0 mt-1 bg-card rounded-lg shadow-lg border border-border overflow-hidden z-10"
         >
           <div className="py-2">
             {suggestions.map((suggestion, index) => (
               <div
                 key={`${suggestion.type}-${index}`}
-                className={`px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-gray-50 h-14 ${index === selectedIndex ? "bg-gray-100" : ""
+                className={`px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-accent h-14 ${index === selectedIndex ? "bg-accent" : ""
                   }`}
                 onClick={() => handleSuggestionClick(suggestion)}
                 onMouseEnter={() => setSelectedIndex(index)}
@@ -222,7 +222,7 @@ export function Search() {
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <p className="text-sm truncate font-medium">{suggestion.text}</p>
                   {suggestion.url && suggestion.type !== "search" ? (
-                    <p className="text-xs text-gray-500 truncate">{suggestion.url}</p>
+                    <p className="text-xs text-muted-foreground truncate">{suggestion.url}</p>
                   ) : (
                     <div className="h-4">{/* Empty div to maintain consistent height */}</div>
                   )}
