@@ -65,12 +65,12 @@ export function History() {
         ) : (
           <div className="space-y-3">
             {(showAll ? history : history.slice(0, 4)).map((item) => (
-              <div key={item.id} className="flex items-start justify-between">
+              <div key={item.id} className="flex items-start justify-between gap-2 min-w-0">
                 <a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start gap-3 hover:underline"
+                  className="flex items-start gap-3 hover:underline min-w-0 flex-1"
                 >
                   <div className="mt-0.5 h-8 w-8 flex-shrink-0 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                     <img
@@ -84,9 +84,9 @@ export function History() {
                       }}
                     />
                   </div>
-                  <div className="space-y-1">
-                    <p className="line-clamp-1 text-sm font-medium">{item.title}</p>
-                    <p className="line-clamp-1 text-xs text-muted-foreground">{item.url}</p>
+                  <div className="space-y-1 min-w-0">
+                    <p className="line-clamp-1 text-sm font-medium truncate">{item.title}</p>
+                    <p className="line-clamp-1 text-xs text-muted-foreground truncate">{item.url}</p>
                   </div>
                 </a>
                 <div className="ml-2 flex items-center gap-2">

@@ -16,7 +16,11 @@ const manifest = defineManifest({
   chrome_url_overrides: {
     newtab: 'index.html',
   },
-  permissions: ['history', 'bookmarks', 'tabs', 'downloads', 'topSites'],
+  permissions: ['history', 'bookmarks', 'tabs', 'downloads', 'downloads.open', 'topSites', 'identity'],
+  oauth2: {
+    client_id: '165335748683-cj02fqtj12sm6q8adcrog451srv47srh.apps.googleusercontent.com',
+    scopes: ['https://www.googleapis.com/auth/tasks'],
+  },
   content_security_policy: {
     extension_pages: "script-src 'self'; object-src 'self'; frame-src https://s.tradingview.com",
   },
