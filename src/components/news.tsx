@@ -12,6 +12,7 @@ interface NewsItem {
   link: string
   source: string
   pubDate: string
+  image: string
 }
 
 interface CachedNews {
@@ -27,7 +28,7 @@ function getCached(): NewsItem[] | null {
     if (Date.now() - cached.timestamp > CACHE_TTL) return null
     return cached.items
   } catch {
-    return null
+    return null 
   }
 }
 
@@ -59,7 +60,12 @@ async function fetchNews(): Promise<NewsItem[]> {
     const link = item.querySelector("link")?.textContent ?? ""
     const source = item.querySelector("source")?.textContent ?? ""
     const pubDate = item.querySelector("pubDate")?.textContent ?? ""
-    result.push({ title, link, source, pubDate })
+    const descRaw = item.querySelector("description")?.textContent ?? ""
+    // Parse the HTML description to extract img src
+    const descDoc = new DOMParser().parseFromString(descRaw, "text/html")
+    const imgEl = descDoc.querySelector("img")
+    const image = imgEl?.getAttribute("src") ?? ""
+    result.push({ title, link, source, pubDate, image })
   })
   return result
 }
@@ -83,7 +89,7 @@ export function News() {
   }, [])
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
+    <Card className="flex flex-col overflow-hidden max-h-[480px]">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-lg font-medium">
           <div className="flex items-center gap-2">
@@ -120,7 +126,14 @@ export function News() {
                 rel="noopener noreferrer"
                 className="group block rounded-lg p-2 -mx-2 transition-colors hover:bg-muted/60"
               >
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-3">
+                  {item.image && (
+                    <img
+                      src={item.image}
+                      alt=""
+                      className="w-20 h-14 rounded-md object-cover flex-shrink-0 bg-muted"
+                    />
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                       {item.title}

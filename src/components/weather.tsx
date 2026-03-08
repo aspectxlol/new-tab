@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Wind, Droplets, Eye, Gauge, Sun, Thermometer } from "lucide-react"
 
-const OWM_API_KEY = "ea6ff4eb65e75d301186f95d92e79323" // paste your OpenWeatherMap API key here
+const OWM_API_KEY = "cd4769e4f837607a34018a3bae769a40" // paste your OpenWeatherMap API key here
 const CACHE_KEY = "weather_cache"
 const CACHE_TTL = 2 * 60 * 60 * 1000 // 2 hours
 
