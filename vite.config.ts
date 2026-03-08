@@ -17,6 +17,7 @@ const manifest = defineManifest({
     newtab: 'index.html',
   },
   permissions: ['history', 'bookmarks', 'tabs', 'downloads', 'downloads.open', 'topSites', 'identity'],
+  host_permissions: ['https://news.google.com/*'],
   oauth2: {
     client_id: '165335748683-cj02fqtj12sm6q8adcrog451srv47srh.apps.googleusercontent.com',
     scopes: ['https://www.googleapis.com/auth/tasks'],

@@ -10,6 +10,7 @@ import { TodoList } from "@/components/todo-list"
 import { WorldClocks } from "@/components/world-clocks"
 import { TradingView } from "@/components/trading-view"
 import { Weather } from "@/components/weather"
+import { News } from "@/components/news"
 
 export default function Home() {
   return (
@@ -55,10 +56,11 @@ export default function Home() {
         </div>
 
         {/* Bottom row */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           <TodoList />
           <WorldClocks />
           <Weather />
+          <News />
         </div>
 
       </div>
