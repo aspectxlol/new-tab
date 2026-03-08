@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Wind, Droplets, Eye, Gauge, Sun, Thermometer } from "lucide-react"
 
-const OWM_API_KEY = "cd4769e4f837607a34018a3bae769a40" // paste your OpenWeatherMap API key here
+const OWM_API_KEY = "ea6ff4eb65e75d301186f95d92e79323" // paste your OpenWeatherMap API key here
 const CACHE_KEY = "weather_cache"
 const CACHE_TTL = 2 * 60 * 60 * 1000 // 2 hours
 
@@ -29,31 +29,48 @@ function degToDir(deg: number): string {
   return dirs[Math.round(deg / 45) % 8]
 }
 
+function skyImage(icon: string): string {
+  const code = icon.replace(/[dn]$/, "")
+  const map: Record<string, string> = {
+    "01": "clear_sky",
+    "02": "few_clouds",
+    "03": "scattered_clouds",
+    "04": "overcast_clouds",
+    "09": "shower_rain",
+    "10": "rain",
+    "11": "thunderstorm",
+    "13": "snow",
+    "50": "mist",
+  }
+  const name = map[code] ?? "clear_sky"
+  return `https://openweathermap.org/img/widget_images/${name}.jpg`
+}
+
 async function fetchWeather(): Promise<WeatherData> {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
           const { latitude: lat, longitude: lon } = pos.coords
-          const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&exclude=minutely,hourly,daily,alerts&appid=${OWM_API_KEY}`
+          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${OWM_API_KEY}`
           const res = await fetch(url)
           if (!res.ok) throw new Error(`API error: ${res.status}`)
           const json = await res.json()
           resolve({
-            temp: Math.round(json.current.temp),
-            feels_like: Math.round(json.current.feels_like),
-            description: json.current.weather[0].description
+            temp: Math.round(json.main.temp),
+            feels_like: Math.round(json.main.feels_like),
+            description: json.weather[0].description
               .split(" ")
               .map((w: string) => w[0].toUpperCase() + w.slice(1))
               .join(" "),
-            icon: json.current.weather[0].icon,
-            wind_speed: Math.round(json.current.wind_speed),
-            wind_deg: json.current.wind_deg,
-            humidity: json.current.humidity,
-            visibility: Math.round(json.current.visibility / 1000),
-            pressure: json.current.pressure,
-            uvi: Math.round(json.current.uvi),
-            dew_point: Math.round(json.current.dew_point),
+            icon: json.weather[0].icon,
+            wind_speed: Math.round(json.wind.speed),
+            wind_deg: json.wind.deg ?? 0,
+            humidity: json.main.humidity,
+            visibility: Math.round((json.visibility ?? 10000) / 1000),
+            pressure: json.main.pressure,
+            uvi: 0,
+            dew_point: Math.round(json.main.temp - ((100 - json.main.humidity) / 5)),
           })
         } catch (e) {
           reject(e)
@@ -128,19 +145,15 @@ export function Weather() {
   return (
     <div className="rounded-2xl overflow-hidden bg-card border border-border shadow-sm">
       {/* Hero section with sky background */}
-      <div className="relative h-48 overflow-hidden">
-        {weather ? (
+      <div className="relative h-48 overflow-hidden bg-slate-700">
+        {weather && (
           <img
-            src={`https://source.unsplash.com/800x400/?${encodeURIComponent(weather.description + " sky")}`}
+            src={skyImage(weather.icon)}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            onError={(e) => {
-              ;(e.target as HTMLImageElement).style.display = "none"
-            }}
           />
-        ) : null}
-        {/* Gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-black/10" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
         {/* Time badge */}
         <div className="absolute top-4 right-4 text-white/90 text-sm font-medium tracking-wide">
