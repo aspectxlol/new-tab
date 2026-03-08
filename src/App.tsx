@@ -9,6 +9,7 @@ import { QuickNotes } from "@/components/quick-notes"
 import { TodoList } from "@/components/todo-list"
 import { WorldClocks } from "@/components/world-clocks"
 import { TradingView } from "@/components/trading-view"
+import { Weather } from "@/components/weather"
 
 export default function Home() {
   return (
@@ -54,9 +55,10 @@ export default function Home() {
         </div>
 
         {/* Bottom row */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <TodoList />
           <WorldClocks />
+          <Weather />
         </div>
 
       </div>
