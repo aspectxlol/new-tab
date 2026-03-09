@@ -14,7 +14,7 @@ import { News } from "@/components/news"
 
 export default function Home() {
   return (
-    <div className="min-h-screen text-foreground">
+    <div className="min-h-screen text-foreground bg-gradient-to-b from-background via-background to-[oklch(0.07_0.02_255)]">
       <div className="max-w-[1800px] mx-auto px-6 pb-8 space-y-4">
 
         {/* Hero: big clock + date */}
