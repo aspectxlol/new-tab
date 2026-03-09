@@ -12,7 +12,7 @@ type Section = {
   charts: ChartEntry[]
 }
 
-const SECTIONS: Section[] = [
+export const SECTIONS: Section[] = [
   {
     title: "Crypto",
     charts: [
@@ -78,7 +78,8 @@ function MiniChart({
   )
 }
 
-export function TradingView() {
+
+export function TradingView({ enabledCharts }: { enabledCharts?: Record<string, boolean> }) {
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden flex flex-col h-full">
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
@@ -88,22 +89,29 @@ export function TradingView() {
         </span>
       </div>
       <div className="flex-1 overflow-y-auto min-h-0">
-        {SECTIONS.map((section, si) => (
-          <div key={section.title}>
-            <div className={`px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 bg-muted/20 ${si > 0 ? "border-t border-border" : ""}`}>
-              {section.title}
+        {SECTIONS.map((section, si) => {
+          // Filter charts by enabledCharts if provided
+          const charts = enabledCharts
+            ? section.charts.filter(c => enabledCharts[c.symbol])
+            : section.charts;
+          if (charts.length === 0) return null;
+          return (
+            <div key={section.title}>
+              <div className={`px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 bg-muted/20 ${si > 0 ? "border-t border-border" : ""}`}>
+                {section.title}
+              </div>
+              <div className="divide-y divide-border">
+                {charts.map((c) => (
+                  <div key={c.symbol}>
+                    <div className="px-4 pt-2 text-xs text-muted-foreground font-medium">{c.label}</div>
+                    <MiniChart symbol={c.symbol} lineColor={c.lineColor} fillColor={c.fillColor} />
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="divide-y divide-border">
-              {section.charts.map((c) => (
-                <div key={c.symbol}>
-                  <div className="px-4 pt-2 text-xs text-muted-foreground font-medium">{c.label}</div>
-                  <MiniChart symbol={c.symbol} lineColor={c.lineColor} fillColor={c.fillColor} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
-  )
+  );
 }
