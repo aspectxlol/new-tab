@@ -32,6 +32,21 @@ import { Settings } from "lucide-react"
 export default function App() {
   // Default config
   type TradingChartsConfig = { [symbol: string]: boolean };
+  interface TodoListConfig {
+    showCompleted: boolean;
+    sortOrder: "asc" | "desc";
+  }
+  interface WorldClocksConfig {
+    zones: string[];
+  }
+  interface WeatherConfig {
+    units: "C" | "F";
+    location: string;
+  }
+  interface NewsConfig {
+    sources: string[];
+    topics: string[];
+  }
   interface DashboardConfig {
     greeting: boolean;
     search: boolean;
@@ -44,9 +59,13 @@ export default function App() {
     tradingView: boolean;
     tradingCharts: TradingChartsConfig;
     todoList: boolean;
+    todoListConfig: TodoListConfig;
     worldClocks: boolean;
+    worldClocksConfig: WorldClocksConfig;
     weather: boolean;
+    weatherConfig: WeatherConfig;
     news: boolean;
+    newsConfig: NewsConfig;
   }
 
   const defaultConfig: DashboardConfig = {
@@ -69,9 +88,13 @@ export default function App() {
       return charts;
     })(),
     todoList: true,
+    todoListConfig: { showCompleted: true, sortOrder: "asc" },
     worldClocks: true,
+    worldClocksConfig: { zones: ["America/New_York", "Europe/London", "Asia/Tokyo"] },
     weather: true,
+    weatherConfig: { units: "C", location: "New York" },
     news: true,
+    newsConfig: { sources: ["BBC", "CNN"], topics: ["Technology", "World"] },
   };
 
   // Load config from localStorage
@@ -89,8 +112,8 @@ export default function App() {
   }, [config]);
 
   return (
-    <div className="min-h-screen text-foreground bg-gradient-to-b from-background via-background to-[oklch(0.07_0.02_255)]">
-      <div className="max-w-[1800px] mx-auto px-6 pb-8 space-y-4">
+    <div className="min-h-screen text-foreground bg-linear-to-b from-background via-background to-[oklch(0.07_0.02_255)] animate-in fade-in-0">
+      <div className="max-w-450 mx-auto px-6 pb-8 space-y-4">
         {/* Config button */}
         <div className="flex justify-end pt-4">
           <DropdownMenu>
@@ -182,30 +205,94 @@ export default function App() {
                   ))}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
-              <DropdownMenuCheckboxItem
-                checked={config.todoList}
-                onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, todoList: !!v }))}
-              >
-                Todo List
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={config.worldClocks}
-                onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, worldClocks: !!v }))}
-              >
-                World Clocks
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={config.weather}
-                onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, weather: !!v }))}
-              >
-                Weather
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={config.news}
-                onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, news: !!v }))}
-              >
-                News
-              </DropdownMenuCheckboxItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Todo List</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="w-56">
+                  <DropdownMenuCheckboxItem
+                    checked={config.todoList}
+                    onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, todoList: !!v }))}
+                  >
+                    Show Todo List
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                  <DropdownMenuCheckboxItem
+                    checked={config.todoListConfig.showCompleted}
+                    onCheckedChange={v => setConfig((c: DashboardConfig) => ({
+                      ...c,
+                      todoListConfig: { ...c.todoListConfig, showCompleted: !!v }
+                    }))}
+                  >
+                    Show Completed
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={config.todoListConfig.sortOrder === "asc"}
+                    onCheckedChange={v => setConfig((c: DashboardConfig) => ({
+                      ...c,
+                      todoListConfig: { ...c.todoListConfig, sortOrder: v ? "asc" : "desc" }
+                    }))}
+                  >
+                    Sort Ascending
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>World Clocks</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="w-56">
+                  <DropdownMenuCheckboxItem
+                    checked={config.worldClocks}
+                    onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, worldClocks: !!v }))}
+                  >
+                    Show World Clocks
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                  {/* Example: show zones as comma-separated string */}
+                  <DropdownMenuCheckboxItem disabled>
+                    Zones: {config.worldClocksConfig.zones.join(", ")}
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Weather</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="w-56">
+                  <DropdownMenuCheckboxItem
+                    checked={config.weather}
+                    onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, weather: !!v }))}
+                  >
+                    Show Weather
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                  <DropdownMenuCheckboxItem
+                    checked={config.weatherConfig.units === "C"}
+                    onCheckedChange={v => setConfig((c: DashboardConfig) => ({
+                      ...c,
+                      weatherConfig: { ...c.weatherConfig, units: v ? "C" : "F" }
+                    }))}
+                  >
+                    Celsius
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem disabled>
+                    Location: {config.weatherConfig.location}
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>News</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="w-56">
+                  <DropdownMenuCheckboxItem
+                    checked={config.news}
+                    onCheckedChange={v => setConfig((c: DashboardConfig) => ({ ...c, news: !!v }))}
+                  >
+                    Show News
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                  <DropdownMenuCheckboxItem disabled>
+                    Sources: {config.newsConfig.sources.join(", ")}
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem disabled>
+                    Topics: {config.newsConfig.topics.join(", ")}
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
               <DropdownMenuSeparator />
               <Button
                 variant="ghost"
@@ -235,39 +322,52 @@ export default function App() {
         {/* Top sites */}
         {config.topSites && <TopSites />}
 
-        {/* Main 3-column grid */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:grid-rows-[720px]">
-          {/* Left column */}
-          <div className="flex flex-col gap-4 min-h-0">
-            {config.bookmarks && <Bookmarks />}
-            <div className="flex-1 min-h-0">
-              {config.downloads && <Downloads />}
+
+        {/* Main grid: dynamically fill columns */}
+        {(() => {
+          // Build a flat array of enabled widgets for the main grid
+          const mainWidgets = [
+            config.bookmarks ? <Bookmarks key="bookmarks" /> : null,
+            config.downloads ? <Downloads key="downloads" /> : null,
+            config.tradingView ? <TradingView key="tradingview" enabledCharts={config.tradingCharts} /> : null,
+            config.quickNotes ? <QuickNotes key="quicknotes" /> : null,
+            config.history ? <History key="history" /> : null,
+          ].filter(Boolean);
+
+          // 3 columns on large screens, 1 on mobile
+          const columns = 3;
+          // rows variable removed (not needed)
+          // Fill row-wise (left-to-right)
+          const grid: React.ReactNode[][] = Array.from({ length: columns }, () => []);
+          mainWidgets.forEach((widget, i) => {
+            grid[i % columns].push(widget!);
+          });
+
+          return (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:grid-rows-[720px]">
+              {grid.map((col, i) => (
+                <div className="flex flex-col gap-4 min-h-0" key={i}>
+                  {col}
+                </div>
+              ))}
             </div>
-          </div>
+          );
+        })()}
 
-          {/* Center column */}
-          <div className="flex flex-col gap-4 min-h-0">
-            {config.history && <History />}
-            <div className="flex-1 min-h-0">
-              {config.quickNotes && <QuickNotes />}
+        {/* Bottom row: dynamically fill columns */}
+        {(() => {
+          const bottomWidgets = [
+            config.todoList ? <TodoList key="todo" /> : null,
+            config.worldClocks ? <WorldClocks key="clocks" /> : null,
+            config.weather ? <Weather key="weather" /> : null,
+            config.news ? <News key="news" /> : null,
+          ].filter(Boolean);
+          return (
+            <div className={`grid grid-cols-1 gap-4 lg:grid-cols-${bottomWidgets.length}`}>
+              {bottomWidgets}
             </div>
-          </div>
-
-          {/* Right column */}
-          <div className="flex flex-col min-h-0">
-            {config.tradingView && (
-              <TradingView enabledCharts={config.tradingCharts} />
-            )}
-          </div>
-        </div>
-
-        {/* Bottom row */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-          {config.todoList && <TodoList />}
-          {config.worldClocks && <WorldClocks />}
-          {config.weather && <Weather />}
-          {config.news && <News />}
-        </div>
+          );
+        })()}
 
       </div>
     </div>
